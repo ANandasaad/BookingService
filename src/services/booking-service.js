@@ -10,16 +10,47 @@ class BookingService {
     try {
       const flightId = data.flightId;
       let getFlightRequestURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${flightId}`;
+
       const flight = await axios.get(getFlightRequestURL);
-      return flight.data;
+      const flightData = flight.data.data;
+      const priceOfFlight = flightData.price;
+      if (data.noOfSeats > flightData.totalSeats) {
+        throw new ServiceError(
+          "Something went wrong in the booking process",
+          "Insufficient number of seats available"
+        );
+      }
+      const totalCost = priceOfFlight * data.noOfSeats;
+      const bookingPayload = { ...data, totalCost };
+
+      const booking = await this.bookingRepository.create(bookingPayload);
+      const updateFlightRequestURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${booking.flightId}`;
+      await axios.patch(updateFlightRequestURL, {
+        totalSeats: flightData.totalSeats - booking.noOfSeats,
+      });
+      const updatedBooking = await this.updateBooking(booking.id, {
+        status: "Booked",
+      });
+
+      return updatedBooking;
     } catch (error) {
+      if (error.name === "RepositoryError" || error.name == "ValidationError") {
+        throw error;
+      }
       throw new ServiceError();
     }
   }
 
-  async updateBooking() {
+  async updateBooking(bookingId, data) {
     try {
-    } catch (error) {}
+      const update = await this.bookingRepository.update(bookingId, data);
+      return update;
+    } catch (error) {
+      if (error.name === "RepositoryError" || error.name == "ValidationError") {
+        throw error;
+      }
+      throw new ServiceError();
+    }
   }
 }
 module.exports = BookingService;

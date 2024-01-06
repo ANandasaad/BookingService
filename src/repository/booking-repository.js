@@ -18,8 +18,14 @@ class BookingRepository {
       );
     }
   }
-  async update() {
+  async update(bookingId, data) {
     try {
+      const booking = await Booking.findByPk(bookingId);
+      if (data.status) {
+        booking.status = data.status;
+      }
+      await booking.save();
+      return booking;
     } catch (error) {
       if (error.name == "SequelizeValidationError") {
         throw new ValidationError(error);

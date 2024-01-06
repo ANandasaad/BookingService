@@ -3,9 +3,8 @@ const { BookingService } = require("../services/index");
 const bookingService = new BookingService();
 const create = async (req, res, next) => {
   try {
-    console.log(req.body);
     const response = await bookingService.createBooking(req.body);
-    console.log(response);
+
     res.json({
       success: true,
       message: "Booking created successfully",
