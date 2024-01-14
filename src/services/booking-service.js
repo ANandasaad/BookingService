@@ -22,7 +22,6 @@ class BookingService {
       }
       const totalCost = priceOfFlight * data.noOfSeats;
       const bookingPayload = { ...data, totalCost };
-
       const booking = await this.bookingRepository.create(bookingPayload);
       const updateFlightRequestURL = `${FLIGHT_SERVICE_PATH}/api/v1/flights/${booking.flightId}`;
       await axios.patch(updateFlightRequestURL, {
