@@ -17,7 +17,7 @@ class BookingController {
           subject:'This is a notification from queue',
           content:'Some queue will subscribe this',
           recipientEmail:'anandkushwaha70@gmail.com',
-          NotificationTime:'2024-01-09T07:04:56'
+          notificationTime:'2024-01-09T07:04:56'
         },
         service:"CREATE_TICKET"
       }
