@@ -38,6 +38,7 @@ class BookingController {
    }
   async  create(req, res, next) {
       try {
+        
         const response = await bookingService.createBooking(req.body);
     
         res.json({

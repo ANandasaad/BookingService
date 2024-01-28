@@ -31,6 +31,8 @@ class BookingService {
         status: "Booked",
       });
 
+      
+
       return updatedBooking;
     } catch (error) {
       if (error.name === "RepositoryError" || error.name == "ValidationError") {
